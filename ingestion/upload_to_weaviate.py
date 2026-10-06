@@ -29,30 +29,32 @@ try:
     collection = client.collections.get(COLLECTION_NAME)    
 
     print("Total chunks:", len(chunks))
+    print("Starting upload...\n")
 
-    with collection.batch.fixed_size(
-        batch_size = 50
-    ) as batch :
+    for index, chunk in enumerate(chunks):
 
-        for index, chunk in enumerate(chunks):
+        collection.data.insert(
+            properties={
+                "text": chunk["text"],
 
-            batch.add_object(
-                properties = {
-                    "text": chunk["text"],
-                    "source": chunk["metadata"]["source"],
-                    "page": chunk["metadata"]["page"],
-                    "chunk": chunk["metadata"]["chunk"],
-                },
+                "source": chunk["metadata"]["source"],
 
-                vector = chunk["embedding"],
-            )
+                "page": chunk["metadata"]["page"],
 
-            print(
-                f"uploaded {index+1}/(len(chunks))"
-            )
+                "chunk": chunk["metadata"]["chunk"],
+            },
 
-    print("\nupload completed.")        
+            vector=chunk["embedding"],
+        )
+
+        print(
+            f"Uploaded {index + 1}/{len(chunks)}"
+        )
+
+
+    print("\nUpload completed successfully.")
+
 
 finally:
 
-    client.close()    
+    client.close()
