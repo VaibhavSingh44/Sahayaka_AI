@@ -3,7 +3,7 @@ import os
 
 import weaviate
 from dotenv import load_dotenv
-from weaviate.classes.init import Auth
+from weaviate.classes.init import Auth, AdditionalConfig, Timeout
 from pathlib import Path
 
 load_dotenv()
@@ -19,6 +19,12 @@ client = weaviate.connect_to_weaviate_cloud(
     cluster_url=WEAVIATE_URL,
     auth_credentials=Auth.api_key(WEAVIATE_API_KEY),
 )
+
+if not WEAVIATE_URL or not WEAVIATE_API_KEY:
+    raise ValueError(
+        "WEAVIATE_URL or WEAVIATE_API_KEY is missing from .env"
+    )
+
 
 try: 
 
